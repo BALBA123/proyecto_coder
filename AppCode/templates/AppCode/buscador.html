@@ -1,0 +1,41 @@
+
+{% extends "AppCode/padre.html" %}
+
+{% load static %}
+
+{% block contenidoQueCambia %}
+    <!--aqui va lo que cambia, y lo que va asociado a esta vista-->
+
+    <head>
+
+        <title>Buscador</title>
+
+    </head>
+
+    <body style="background-color: lightblue;">
+        <h1>Buscador de cursos por camada</h1>
+
+        <br>
+        <br>
+        <form action="/AppCode/buscar/" method="GET">
+
+            <input type="number" name="camada" id="camada" >
+            <input type="submit" name="buscar">
+
+        </form>
+        <p>estamos buscando el: {{camada}}</p>
+
+        {% if nombreCurso %}
+
+        <ul>
+            {% for curso in nombreCurso %}
+                <li>{{curso.nombre}}</li>
+                <li>{{curso.camada}}</li> 
+            {% endfor %}
+        </ul>
+
+        {% endif %}
+
+
+    </body>
+{% endblock %}

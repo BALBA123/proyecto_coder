@@ -12,22 +12,29 @@
     </head>
     
     <body style="background-color: orange;">
-        <h1>Profesores</h1>
+        <h1>Formulario - agregar profesor</h1>
         <br>
         <br>
+        {% if miFormulario.errors %}
+
+        <p style="background-color: red;">estan mal los datos revisar</p>
+
+        {% endif %}
+
         <br>
         <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
+        <form action="" method="post"> {% csrf_token %} <!--token para que ande el formulario con djngo-->
+
+            <!--aca esta la magia de Django supuestamente...-->
+            <table>
+
+                {{ miFormulario.as_table }}
+
+            </table>
+
+            <input type="submit", value="Enviar">
+
+        </form>
         <br>
         <br>
         <br>

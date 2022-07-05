@@ -1,9 +1,10 @@
 from distutils.log import info
+import re
 from xml.dom.minidom import Document
 from django.shortcuts import render 
 from django.http import HttpResponse
-from AppCode.models import cursos
-from AppCode.forms import cursoFormulario
+from AppCode.models import cursos, profesor
+from AppCode.forms import CursoFormulario, ProfesorFormulario
 
 
 # Create your views here.
@@ -52,7 +53,7 @@ def entregables(request):
 def cursoFormularios(request):
     if request.method == "POST":
 
-        miFormulario = cursoFormulario(request.POST) # aca llega toda la info del HTML
+        miFormulario = CursoFormulario(request.POST) # aca llega toda la info del HTML
 
         print(miFormulario)
 
@@ -67,6 +68,50 @@ def cursoFormularios(request):
             return render(request, "AppCode/curso.html")
     else:
 
-        miFormulario = cursoFormulario() #formulario vacio para construir el HTML
+        miFormulario = CursoFormulario() #formulario vacio para construir el HTML
         return render(request, "AppCode/cursoFormulario.html", {"miFormulario":miFormulario})
 
+def profesorFormulario(request):
+    if request.method == "POST":
+
+        miFormulario = ProfesorFormulario(request.POST)
+
+        print(miFormulario)
+
+        if miFormulario.is_valid:
+
+            info = miFormulario.cleaned_data
+            #print(info) #esto muestra el diccionario para ver mejor los datos ya pasados a limpio
+            profe = profesor (nombre=info['Nombre'], apellido=info['Apellido'], email=info['Email'], profesion=info['Profesion'])
+            # las key´s al pasarce al html se pone la primera letra en mayuscula???
+            profe.save()
+
+            return render(request, "AppCode/inicio.html")
+
+    else:
+            
+        miFormulario = ProfesorFormulario()
+        return render(request, "AppCode/profesores.html", {"miFormulario":miFormulario})
+
+
+
+def buscador(request):
+
+    return render(request, "AppCode/buscador.html")
+
+def buscar(request):
+    #respuesta = f"estoy buscando la camada nro: {request.GET['camada']}"
+    #return HttpResponse(respuesta)
+    if request.GET['camada']:
+
+        camada =request.GET['camada'] # aca solo renvio lo que piden
+        print(camada)
+        nombreCurso = cursos.objects.filter(camada__icontains=camada) # este es el verdadero buscador
+        print(nombreCurso)
+# el buscador entre al modelo cursos, a sus objetos y filtra en la key camada. primer camada es la variable de la funcion y la segunda es la key del diccionario de la base de datos
+        return render(request, "AppCode/buscador.html", {"curso":nombreCurso, "camada":camada})
+
+    else:
+        respuesta = "no ingresaste numero de camada"
+
+    return render(request, "AppCode/buscador.html")
